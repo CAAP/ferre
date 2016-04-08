@@ -1,0 +1,23 @@
+#!/bin/ferre/lua
+
+local sql = require'ferre.sql'
+local aux = require'ferre.aux'
+
+local fd = require'carlos.fold'
+local tbname = os.date'W%U' -- WEEK of the YEAR
+local schema = 'uid, clave, precio, qty INTEGER, rea INTEGER, totalCents INTEGER'
+local header = {'uid', 'clave', 'precio', 'qty', 'rea', 'totalCents'}
+
+local function add(w)
+    w.method = 'into'
+    w.dbname = '/db/tickets.sql'
+    w.tbname = tbname
+    w.args = tbname
+    w.schema = schema
+    w.x = fd.reduce( header, fd.map( function(k) return w[k] or '' end ), fd.into, {} )
+    sql(w)
+    return 'OK'
+end
+
+aux(add)
+

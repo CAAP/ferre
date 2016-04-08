@@ -1,0 +1,18 @@
+#!/bin/ferre/lua
+
+local fd = require'carlos.fold'
+local sql = require'ferre.sql'
+local aux = require'ferre.aux'
+local today = os.date'%Y%m'
+
+local function remove(w)
+    w.method = 'delete'
+    w.dbname = '/db/tickets.sql'
+    w.tbname = today
+    w.args = { today, {'id', 'clave'}}
+    w.x = { w.id, w.clave }
+    sql(w)
+end
+
+aux(remove)
+

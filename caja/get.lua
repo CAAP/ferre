@@ -1,0 +1,19 @@
+#!/bin/ferre/lua
+
+local aux = require'ferre.aux'
+local json = require'ferre.json'
+
+local function tickets( q )
+    local uid = q.uid
+    local year, month, day = uid:match'(%d+)-(%d+)-(%d+)T'
+    local tbname = os.date('W%U', os.time{year=year, month=month, day=day})
+    local clause = string.format("WHERE uid LIKE '%s'", uid)
+    local w = {	tbname= tbname,
+		dbname= '/db/tickets.sql',
+		clause= clause,
+		QRY= string.format('SELECT * FROM %q %s', tbname, clause) }
+    return json( w )
+end
+
+aux( tickets )
+
