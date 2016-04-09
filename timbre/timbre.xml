@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cfdi:Comprobante
+    xsi:schemaLocation="http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv32.xsd"
+    xmlns:cfdi="http://www.sat.gob.mx/cfd/3"
+    xmlns:tfd="http://www.sat.gob.mx/TimbreFiscalDigital"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    LugarExpedicion=$LUGAR
+    NumCtaPago=$NCTAPAGO
+    formaDePago=$FORMAPAGO
+    metodoDePago=$MDOPAGO
+    subTotal=$SUBT
+    total=$TOTAL
+    fecha=$FECHA
+
+certificado
+noCertificado
+sello
+
+    tipoDeComprobante=$TIPO
+    version="3.2" >
+    <cfdi:Emisor nombre=$NOMBRE rfc=$RFC>
+	<cfdi:DomicilioFiscal codigoPostal=$ZIP pais="MEXICO" estado="OAXACA" municipio="Ocotlan de Morelos" calle=""/>
+	<cfdi:RegimenFiscal Regimen=$REGIMEN/>
+    </cfdi:Emisor>
+    <cfdi:Receptor nombre=$NOMBRE rfc=$RFC>
+	<cfdi:Domicilio pais="MEXICO" calle=""/>
+    </cfdi:Receptor>
+    <cfdi:Conceptos>
+    </cfdi:Conceptos>
+    <cfdi:Impuestos>
+	<cfdi:Traslados>
+	    <cfdi:Traslado import= tasa= impuesto=/>
+	</cfdi:Traslados>
+    </cfdi:Impuestos>
+    <cfdi:Addenda/>
+</cfdi:Comprobante>
+
+
