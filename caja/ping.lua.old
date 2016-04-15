@@ -3,7 +3,7 @@
 local aux = require'ferre.aux'
 local json = require'ferre.json'
 
-local function getAll(w)
+local function getAll()
     local tbname = os.date'W%U'
     local clause = "WHERE id_tag NOT LIKE '%Z'" --  ORDER BY uid DESC
     local w = { tbname= tbname,
