@@ -7,7 +7,7 @@ local function tickets( q )
     local uid = q.uid
     local year, month, day = uid:match'(%d+)-(%d+)-(%d+)T'
     local tbname = os.date('W%U', os.time{year=year, month=month, day=day})
-    local clause = string.format("WHERE uid LIKE '%s'", uid)
+    local clause = string.format("WHERE uid LIKE %q", uid)
     local w = {	tbname= tbname,
 		dbname= '/db/tickets.sql',
 		clause= clause,

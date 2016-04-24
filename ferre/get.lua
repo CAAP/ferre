@@ -1,0 +1,17 @@
+#!/bin/ferre/lua
+
+local aux = require'ferre.aux'
+local json = require'ferre.json'
+
+local function record( q )
+    local tbname = 'datos'
+    local clause = string.format("WHERE clave LIKE %q", q.clave)
+    local w = {	tbname= tbname,
+		dbname= '/db/ferre.sql',
+		clause= clause,
+		QRY= string.format('SELECT * FROM %q %s', tbname, clause) }
+    return json( w )
+end
+
+aux( record )
+

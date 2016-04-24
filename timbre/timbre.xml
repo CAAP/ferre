@@ -5,32 +5,29 @@
     xmlns:tfd="http://www.sat.gob.mx/TimbreFiscalDigital"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    LugarExpedicion=$LUGAR
+    LugarExpedicion="OCOTLAN DE MORELOS"
     NumCtaPago=$NCTAPAGO
     formaDePago=$FORMAPAGO
     metodoDePago=$MDOPAGO
     subTotal=$SUBT
     total=$TOTAL
+    moneda="MXN"
     fecha=$FECHA
-
-certificado
-noCertificado
-sello
-
+    folio=$FOLIO
     tipoDeComprobante=$TIPO
     version="3.2" >
     <cfdi:Emisor nombre=$NOMBRE rfc=$RFC>
-	<cfdi:DomicilioFiscal codigoPostal=$ZIP pais="MEXICO" estado="OAXACA" municipio="Ocotlan de Morelos" calle=""/>
-	<cfdi:RegimenFiscal Regimen=$REGIMEN/>
+	<cfdi:DomicilioFiscal calle="" noExterior="" colonia="" municipio="OCOTLAN DE MORELOS" estado="OAXACA" pais="MEXICO" codigoPostal="71510" />
+	<cfdi:RegimenFiscal Regimen="ACTIVIDAD EMPRESARIAL Y PROFESIONAL" />
     </cfdi:Emisor>
     <cfdi:Receptor nombre=$NOMBRE rfc=$RFC>
-	<cfdi:Domicilio pais="MEXICO" calle=""/>
+	<cfdi:Domicilio calle="" noExterior="" colonia="" municipio="" estado="OAXACA" pais="MEXICO" codigoPostal="71510" />
     </cfdi:Receptor>
     <cfdi:Conceptos>
     </cfdi:Conceptos>
     <cfdi:Impuestos>
 	<cfdi:Traslados>
-	    <cfdi:Traslado import= tasa= impuesto=/>
+	    <cfdi:Traslado impuesto="IVA" tasa= importe= />
 	</cfdi:Traslados>
     </cfdi:Impuestos>
     <cfdi:Addenda/>
