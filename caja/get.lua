@@ -1,4 +1,4 @@
-#!/bin/ferre/lua
+#!/usr/local/bin/lua
 
 local aux = require'ferre.aux'
 local json = require'ferre.json'
