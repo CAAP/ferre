@@ -1,4 +1,4 @@
-#!/bin/ferre/lua
+#!/usr/local/bin/lua
 
 local sql = require'carlos.sqlite'
 local fd = require'carlos.fold'

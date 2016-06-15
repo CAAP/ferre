@@ -2,11 +2,12 @@ local fd = require'carlos.fold'
 local url = require'socket.url'
 local socket = require'socket'
 
-local hostn = 'www.sepomex.gob.mx'
+local hostn = 'www.correosdemexico.gob.mx'
 local host = '177.234.32.60'
-local file = '/lservicios/servicios/descarga.aspx'
+local port = 80
+local uri = '/lservicios/servicios/descarga.aspx'
 
-local ppties = {
+local pties = {
 	'__EVENTTARGET',
 	'__EVENTARGUMENT',
 	'__LASTFOCUS',
@@ -20,32 +21,36 @@ local ppties = {
 	'btnFind.y'
 }
 
-local vals = { '', '', '', '', '', '00', '000', '', '', '0', '0' }
+local vals = { '', '', '', '', '', '00', '000', '', '', '23', '1' }
 
 local function encode()
-    return table.concat( fd.reduce(ppties, fd.map(function(x, i) return (x .. '=' .. vals[i]) end), fd.into, {}), '&' )
+    return table.concat( fd.reduce(pties, fd.map(function(x, i) return (x .. '=' .. vals[i]) end), fd.into, {}), '&' )
 end
 
-local function request(args)
-    local c = assert( socket.connect(host, 80) ) -- establish an http connection
+local query = '$method $uri HTTP/1.1\r\nHost: $host\r\nAccept: text/html\r\n$extra\r\n$args'
+
+local function request(ops)
+    local u = query:gsub('%$(%w+)', {method=method, uri=uri, host=hostn, args=(args or ''), extra=(extra or '')})
+    local c = assert( socket.connect(host, port) )
     c:settimeout(0) -- do not block
-    c:send("GET " .. file .. " HTTP/1.1\r\nHost: " .. hostn .. "\r\nConnection: keep-alive\r\nAccept: text/html\r\n\r\n" .. args)
+    c:send( u )
+    socket.sleep(1)
     local s, msg = c:receive() -- status line
-    if msg or not(s:match'200') then c:close(); return nil end
-    local ret = {}
-    while true do
+    if msg or not(s:match'200') then c:close(); return nil, msg or s end
+    local ret = { s }
+    repeat
 	local s, status, partial = c:receive()
 	ret[#ret+1] = s or partial
-	if not(s or partial) then break end
-    end
+    until not(s)
     c:close()
-    return table.concat(ret, '') -- '\n'
+    return ret -- table.concat(ret, '') -- '\n'
 end
 
 local function zipcode( cp )
-    local ret = assert( request'', 'Error connecting to ' .. host )
+--    local ret = assert( request'GET', 'Error connecting to ' .. host )
+    local ret = assert( request{method='GET', uri=uri, host=hostn, extra='', args=''} )
 
-    local function getvalue( p ) return ret:match('id="' .. p ..'"[%s\n\r\f]+value="(%g+)"') end
+    local function getvalue( j ) return ret[j]:match('value="(%g+)"') end
 
     local function values( s )
 	local a = {}
@@ -56,14 +61,25 @@ local function zipcode( cp )
     -- cp, asentamiento, tipo_asentamiento, municipio, estado, ciudad
     local function order( a ) return { a[1], a[2], a[4], a[5] } end
 
-    vals[4] = url.escape( getvalue'__VIEWSTATE' )
-    vals[5] = url.escape( getvalue'__EVENTVALIDATION' )
+-- 'id="' .. p ..'"
+    vals[4] = url.escape( getvalue(28) )
+    vals[5] = url.escape( getvalue(30) )
     vals[9] = cp
 
-    ret = http.request(sepomex .. '?' .. encode()):match('(<tr class="dgNormal".*)<tr class="dgotro"'):gsub('<a href%g*</a>', ''):gsub('[\t\r\n]*', ''):gsub('([%s\t\r\n]*)(</td>)','%2')
+    local q = 'Content-type: aplication/x-www-form-urlencoded\r\nContent-length: %d\r\n'
 
-    return fd.reduce(st.split(ret, '</tr>'), fd.map(values), fd.map(order), fd.into, {})
+    local data = encode()
+
+    print( data )
+
+    ret = assert( request{method='POST', uri=uri, host=hostn, extra=string.format(q, #data), args=data} )
+--    ret = assert( request('GET', string.format(q, #data, hostn..uri), data) )
+
+    return ret
+--    ret = http.request(sepomex .. '?' .. encode()):match('(<tr class="dgNormal".*)<tr class="dgotro"'):gsub('<a href%g*</a>', ''):gsub('[\t\r\n]*', ''):gsub('([%s\t\r\n]*)(</td>)','%2')
+
+--    return fd.reduce(st.split(ret, '</tr>'), fd.map(values), fd.map(order), fd.into, {})
 end
 
-return request, zipcode
+return zipcode
 
