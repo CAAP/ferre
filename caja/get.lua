@@ -5,11 +5,10 @@ local json = require'ferre.json'
 
 local function tickets( q )
     local uid = q.uid
-    local year, month, day = uid:match'(%d+)-(%d+)-(%d+)T'
-    local tbname = os.date('W%U', os.time{year=year, month=month, day=day})
+    local tbname = 'tickets'
     local clause = string.format("WHERE uid LIKE %q", uid)
     local w = {	tbname= tbname,
-		dbname= '/db/tickets.sql',
+		dbname= string.format('/db/%s.db', os.date('W%U')),
 		clause= clause,
 		QRY= string.format('SELECT * FROM %q %s', tbname, clause) }
     return json( w )
