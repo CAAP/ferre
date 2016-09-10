@@ -25,28 +25,22 @@ local head = {'',
 	campos({'CLAVE', 'CNT', '%', 'PRECIO', 'TOTAL'}),
 	''}
 
-local function procesar(w)
+local function procesar(s)
     head[#head+1] = w.desc
     head[#head+1] = campos(w.clave, w.qty, w[w.precio], w.rea, w[w.unidad], w.subtotal)
 end
 
-local function aux()
-    local QRY = string.format('SELECT * FROM %s WHERE uid = %q')
-    fd.reduce( tktDB.query(QRY), fd.map(), fd.into, head)
-end
-
-local function get(uid)
---    local n = tktDB.count(W, 'WHERE uid' , uid)
---    if n > 0 then end
-    head[#head+1] = uid
+local function get(s)
+    for ss in s:gmatch'[^&]+' do end
     head[#head+1] = centrado'GRACIAS POR SU COMPRA'
 end
 
-local cmd, uid = io.read():match'/(%g+)%?(%g+)'
+local cmd, data = io.read():match'/(%g+)%?(%g+)'
 
 head[1] = centrado(cmd:upper())
 
-get(uid)
+get(data)
 
 print( table.concat(head, '\n') )
 
+print(uid)
