@@ -8,7 +8,7 @@ local function tickets( q )
     local tbname = 'tickets'
     local clause = string.format("WHERE uid LIKE %q", uid)
     local w = {	tbname= tbname,
-		dbname= string.format('/db/%s.db', os.date('W%U')),
+		dbname= string.format('/db/%s.db', q.week),
 		clause= clause,
 		QRY= string.format('SELECT * FROM %q %s', tbname, clause) }
     return json( w )
