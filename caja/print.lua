@@ -14,7 +14,7 @@ local function tickets( q )
 -- maybe change to use fd.reduce || another version in stream.lua exists
     local function collect( a )
 	local t = {}
-	for k,v in a:gmatch'([^%s]+)%s([^%s]+)' do t[k] = v end
+	for k,v in a:gmatch'([a-zT]+)%s([^a-z]+)' do t[k] = v end
 	return t
     end
 

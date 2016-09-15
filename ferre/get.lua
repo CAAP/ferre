@@ -7,7 +7,7 @@ local function record( q )
     local tbname = 'datos'
     local clause = string.format("WHERE clave LIKE %q", q.clave)
     local w = {	tbname= tbname,
-		dbname= '/db/ferre.sql',
+		dbname= '/db/ferre.db',
 		clause= clause,
 		QRY= string.format('SELECT * FROM %q %s', tbname, clause) }
     return json( w )
