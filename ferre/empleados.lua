@@ -2,5 +2,5 @@
 
 local json = require'ferre.json'
 
-print( json{dbname='/db/ferre.sql', tbname='empleados', clause='', QRY='SELECT * FROM empleados'} )
+print( json{dbname='/db/ferre.db', tbname='empleados', clause='', QRY='SELECT * FROM empleados'} )
 

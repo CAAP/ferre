@@ -4,7 +4,7 @@ local aux = require'ferre.aux'
 local json = require'ferre.json'
 
 local function record( q )
-    local tbname = 'datos'
+    local tbname = 'precios'
     local clause = string.format("WHERE desc LIKE %q ORDER BY desc", q.desc:gsub('*','%%')..'%%')
     local w = {	tbname= tbname,
 		dbname= '/db/ferre.db',

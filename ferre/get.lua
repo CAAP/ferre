@@ -9,7 +9,7 @@ local function record( q )
     local w = {	tbname= tbname,
 		dbname= '/db/ferre.db',
 		clause= clause,
-		QRY= string.format('SELECT * FROM %q %s', tbname, clause) }
+		QRY= string.format('SELECT * FROM %q %s LIMIT 1', tbname, clause) }
     return json( w )
 end
 

@@ -3,10 +3,11 @@
 local sql = require'carlos.sqlite'
 local fd = require'carlos.fold'
 
-local conn = sql.connect'/db/ferre.sql'
+local conn = sql.connect'/db/ferre.db'
 
 local datos = conn.header'datos'
 assert(datos, 'Table "datos" not found in "/db/ferre.sql"')
+datos[#datos] = nil -- remove costol
 datos[#datos] = nil -- remove fecha
 
 local function quot(x) return string.format('%q', x) end
