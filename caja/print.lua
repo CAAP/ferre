@@ -16,7 +16,7 @@ local function tickets( q )
 	return t
     end
 
-    q.data = fd.reduce( q.args, fd.map(collect), fd.into, {} )
+    q.datos = fd.reduce( q.args, fd.map(collect), fd.into, {} )
 
     lpr( tkt( q ) )
 
