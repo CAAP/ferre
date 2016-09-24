@@ -5,7 +5,7 @@ local json = require'ferre.json'
 
 local function record( q )
     local tbname = 'datos'
-    local clause = string.format("WHERE clave LIKE %q", q.clave)
+    local clause = q.clave and string.format("WHERE clave LIKE %q", q.clave) or string.format("WHERE desc LIKE '%s%%'", q.desc)
     local w = {	tbname= tbname,
 		dbname= '/db/ferre.db',
 		clause= clause,
