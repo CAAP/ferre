@@ -44,7 +44,7 @@ local function tickets( q )
     end
 
 --    lpr( tkt( fetch( q ) ) )
-    fs.dump( 'htdocs/app-ferre/test.txt', tkt( fetch( q ) ) )
+    fs.dump( '/cgi-bin/ferre/caja/test.txt', tkt( fetch( q ) ) )
 
     return 'OK'
 end
