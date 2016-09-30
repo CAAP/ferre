@@ -12,9 +12,10 @@ local function vals(s)
 end
 
 local function records( q )
-    local stmt = 'CREATE TABLE IF NOT EXISTS proveedores (clave, proveedor)'
+    local stmt = 'CREATE TABLE IF NOT EXISTS proveedores (clave PRIMARY KEY, proveedor)'
     local conn = sql.connect'/db/inventario.db'
 
+    assert( conn.exec'DROP TABLE IF EXISTS proveedores' )
     assert( conn.exec(stmt), string.format('Error executing: %s', stmt) )
 
     assert( #q.args > 0, 'No data received!' )
