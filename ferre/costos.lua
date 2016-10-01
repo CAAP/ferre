@@ -10,7 +10,7 @@ local function quot(x)
     return tonumber(x) and (math.tointeger(x) or x) or string.format('%q', x)
 end 
 
-local JSON = { 'clave', 'desc', 'fecha', 'obs', 'version', 'costol' }
+local JSON = { 'clave', 'desc', 'fecha', 'faltante', 'version', 'costol' }
 
 local function tovec(a)
     local ret = fd.reduce( JSON, fd.map(function(k) return quot(a[k] or '') end), fd.into, {} )
@@ -28,7 +28,7 @@ end
 local function int(x) return math.tointeger(x) or x end
 
 local function records()
-    local clause = 'WHERE precios.clave == faltantes.clave AND desc NOT LIKE "VV%" ORDER BY desc'
+    local clause = 'WHERE datos.clave == faltantes.clave AND desc NOT LIKE "VV%" ORDER BY desc'
     local qry = string.format('SELECT *, 0 version FROM faltantes, datos %s', clause)
     local conn = assert( sql.connect'/db/ferre.db' )
 

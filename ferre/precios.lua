@@ -10,7 +10,7 @@ local function quot(x)
     return tonumber(x) and (math.tointeger(x) or x) or string.format('%q', x)
 end 
 
-local JSON = { 'clave', 'desc', 'fecha', 'obs', 'version', 'precio1', 'u1', 'precio2', 'u2', 'precio3', 'u3' }
+local JSON = { 'clave', 'desc', 'fecha', 'faltante', 'obs', 'version', 'precio1', 'u1', 'precio2', 'u2', 'precio3', 'u3' }
 
 local function tovec(a)
     local ret = fd.reduce( JSON, fd.map(function(k) return quot(a[k] or '') end), fd.into, {} )
