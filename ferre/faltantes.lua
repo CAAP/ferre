@@ -34,7 +34,7 @@ local function records()
 
     local conn2 = assert( sql.connect'/db/inventario.db' )
     local qry3 = 'SELECT * FROM proveedores'
-    local provs = fd.reduce( conn2.query(qry3), fd.rejig(function(x) return x.proveedor:gsub('"',''), int(x.clave:gsub('"','')) end), fd.merge, {} )
+    local provs = fd.reduce( conn2.query(qry3), fd.rejig(function(x) return x.proveedor, int(x.clave) end), fd.merge, {} )
 
     local keys = table.concat(fd.reduce(JSON, fd.map( quot ), fd.into, {}), ', ')
     local data = table.concat(fd.reduce( conn.query( qry ), fd.map(function(w) w.proveedor = provs[int(w.clave)] or 'X'; return w end), fd.map( tovec ), fd.into, {} ), ', ')
