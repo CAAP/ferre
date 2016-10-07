@@ -38,7 +38,7 @@ local function tickets(q)
 	local fecha = uid:match'([^P]+)P'
 	local p = nombres[int(uid:match'(%d+)$')] or 'NaP'
 
-	local ret = {fecha=fecha, person=p, tag=''}
+	local ret = {fecha=fecha, person=p, tag=(q.tag or '')}
 
         local total = 0
 	local suma = fd.map(function(w) total = total + w.totalCents; return w end)
