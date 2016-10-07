@@ -8,11 +8,12 @@ local function tickets( q )
     local y,m,d = uid:match'^(%d+)-(%d+)-(%d+)'
     local week = os.date( 'W%W', os.time{year=y, month=m, day=d} )
     local tbname = 'tickets'
-    local clause = string.format("WHERE uid LIKE %q", uid)
+    local stmt = 'uid, SUM(qty) count, SUM(totalCents) totalCents, id_tag'
+    local clause = string.format("WHERE uid LIKE '%s%%'", uid)
     local w = {	tbname= tbname,
 		dbname= string.format('/db/%s.db', week),
 		clause= clause,
-		QRY= string.format('SELECT * FROM %q %s', tbname, clause) }
+		QRY= string.format('SELECT %s FROM %q %s GROUP BY uid', stmt, tbname, clause) }
     return json( w )
 end
 
