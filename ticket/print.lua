@@ -5,7 +5,6 @@ local lpr = require'ferre.bixolon'
 local tkt = require'ferre.ticket'
 
 local fd = require'carlos.fold'
-local fs = require'carlos.files'
 local sql = require'carlos.sqlite'
 
 local function int(d) return math.tointeger(d) or d end
