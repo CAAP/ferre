@@ -28,17 +28,14 @@ end
 local function int(x) return math.tointeger(x) or x end
 
 local function records()
-    local clause = 'WHERE datos.clave == faltantes.clave AND faltante == 1 ORDER BY desc'
-    local qry = string.format('SELECT datos.fecha, datos.clave, desc, ROUND(costol/1e4,2) costol, obs, "X" proveedor FROM faltantes, datos %s', clause)
+    local clause = 'LEFT JOIN faltantes ON faltantes.clave == datos.clave LEFT JOIN proveedores ON datos.clave == proveedores.clave'
+    local qry = string.format('SELECT datos.fecha, datos.clave, desc, ROUND(costol/1e4,2) costol, obs, faltante, proveedor FROM datos %s', clause)
     local conn = assert( sql.connect'/db/ferre.db' )
 
-    local conn2 = assert( sql.connect'/db/inventario.db' )
-    local qry3 = 'SELECT * FROM proveedores'
-    local provs = fd.reduce( conn2.query(qry3), fd.rejig(function(x) return x.proveedor, int(x.clave) end), fd.merge, {} )
+    assert( conn.exec'ATTACH DATABASE "/db/inventario.db" AS NV' )
 
     local keys = table.concat(fd.reduce(JSON, fd.map( quot ), fd.into, {}), ', ')
-    local data = table.concat(fd.reduce( conn.query( qry ), fd.map(function(w) w.proveedor = provs[int(w.clave)] or 'X'; return w end), fd.map( tovec ), fd.into, {} ), ', ')
--- fd.map(function(w) w.proveedor = provs[int(w.clave)] or 'X'; return w end), 
+    local data = table.concat(fd.reduce( conn.query( qry ), fd.filter(function(w) return w.faltante == 1 end), fd.map( tovec ), fd.into, {} ), ', ')
     return string.format('Content-Type: text/html\r\n\r\n[[%s], [%s]]', keys, data)
 end
 
