@@ -28,9 +28,11 @@ end
 local function int(x) return math.tointeger(x) or x end
 
 local function records()
-    local clause = 'WHERE precios.clave == faltantes.clave AND desc NOT LIKE "VV%" ORDER BY desc'
-    local qry = string.format('SELECT *, 0 version FROM faltantes, precios %s', clause)
     local conn = assert( sql.connect'/db/ferre.db' )
+    local clause = 'WHERE precios.clave == faltantes.clave AND desc NOT LIKE "VV%"'
+    local qry = string.format('SELECT * FROM faltantes, precios %s', clause)
+
+    assert( conn.exec"ATTACH DATABASE '/db/inventario.db' AS NV" )
 
     local keys = table.concat(fd.reduce(JSON, fd.map( quot ), fd.into, {}), ', ')
     local data = table.concat(fd.reduce( conn.query( qry ), fd.map( tovec ), fd.into, {} ), ', ')
