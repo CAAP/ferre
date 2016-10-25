@@ -10,7 +10,7 @@ local function quot(x)
     return tonumber(x) and (math.tointeger(x) or x) or string.format('%q', x)
 end 
 
-local JSON = { 'clave', 'desc', 'fecha', 'faltante', 'obs', 'version', 'precio1', 'u1', 'precio2', 'u2', 'precio3', 'u3' }
+local JSON = { 'clave', 'desc', 'fecha', 'faltante', 'obs', 'proveedor', 'version', 'precio1', 'u1', 'precio2', 'u2', 'precio3', 'u3', 'costol' }
 
 local function tovec(a)
     local ret = fd.reduce( JSON, fd.map(function(k) return quot(a[k] or '') end), fd.into, {} )
@@ -19,8 +19,8 @@ end
 
 local function records()
     local conn = assert( sql.connect'/db/ferre.db' )
-    local clause = 'WHERE precios.clave == faltantes.clave AND desc NOT LIKE "VV%"'
-    local qry = string.format('SELECT * FROM faltantes, precios %s', clause)
+    local clause = 'WHERE precios.clave == stock.clave AND desc NOT LIKE "VV%"'
+    local qry = string.format('SELECT * FROM stock, precios %s', clause)
 
     assert( conn.exec"ATTACH DATABASE '/db/inventario.db' AS NV" )
 
