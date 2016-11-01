@@ -17,16 +17,6 @@ local function tovec(a)
     return string.format('[%s]', table.concat(ret, ', '))
 end
 
-local function groups(a)
-    return function(w)
-	if not a[w.clave] then a[w.clave] = {} end
-	local ret = a[w.clave]
-	ret[#ret+1] = w.obs
-    end
-end
-
-local function int(x) return math.tointeger(x) or x end
-
 local function records()
     local conn = assert( sql.connect'/db/ferre.db' )
     local clause = 'WHERE precios.clave == faltantes.clave AND desc NOT LIKE "VV%"'
