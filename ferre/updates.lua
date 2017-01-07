@@ -19,28 +19,34 @@ local function push(week, vers, ret)
 	local clave = w.clave
 	if not ret[clave] then ret[clave] = {clave=clave, store='PRICE'} end
 	local z = ret[clave]
-	z[w.campo] = w.valor
+	z[w.campo] = w.valor or ''
     end
 
     if conn.count('updates', clause) > 0 then
 	fd.reduce(conn.query(string.format(QRY, clause)), into)
+	local nvers = conn.count'updates'
+	ret.VERS = {store='VERS', week=week, vers=nvers}
     end
-
-    return conn.count'updates'
 end
 
 local function records(w)
     local ret = {}
     local vers = w.vers
 
-    if w.week < week then -- XXX should NOT be valid for more than a week old | can define a new variable holding one week ago
+--[[
+    local wk = w.week
+    repeat
+	push( wk, vers, ret )
+	vers = 0
+    until wk == week
+--]]
+
+    if w.week < week then
 	push( w.week, vers, ret )
 	vers = 0
     end
 
-    vers = push( week, vers, ret )
-
-    ret.VERS = {store='VERS', week=week, vers=vers}
+    push(week, vers, ret)
 
     ret = fd.reduce(fd.keys( ret ), fd.map( hd.asJSON ), fd.into, {})
 
