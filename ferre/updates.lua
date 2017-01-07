@@ -7,13 +7,15 @@ local aux = require'ferre.aux'
 local mx = require'ferre.timezone'
 local hd = require'ferre.header'
 
-local week = os.date('W%U', mx())
+local week = os.date('Y%YW%U', mx())
+
+local ups = {store='VERS', week='', vers=0}
 
 local QRY = 'SELECT * FROM updates %s'
 
-local function push(week, vers, ret)
-    local conn = assert( sql.connect(string.format('/db/%s.db', week)) )
-    local clause = string.format('WHERE vers > %d', vers)
+local function push(ret)
+    local conn = assert( sql.connect(string.format('/db/%s.db', ups.week)) )
+    local clause = string.format('WHERE vers > %d', ups.vers)
 
     local function into(w)
 	local clave = w.clave
@@ -24,29 +26,24 @@ local function push(week, vers, ret)
 
     if conn.count('updates', clause) > 0 then
 	fd.reduce(conn.query(string.format(QRY, clause)), into)
-	local nvers = conn.count'updates'
-	ret.VERS = {store='VERS', week=week, vers=nvers}
+	ups.vers = conn.count'updates'
     end
 end
 
 local function records(w)
-    local ret = {}
-    local vers = w.vers
+    local ret = {ups}
+    local time = mx()
 
---[[
-    local wk = w.week
-    repeat
-	push( wk, vers, ret )
-	vers = 0
-    until wk == week
---]]
+    ups.week = w.oweek; ups.vers = w.overs -- Initial values
 
-    if w.week < week then
-	push( w.week, vers, ret )
-	vers = 0
+    push( ret )
+
+    while ups.week ~= w.nweek do
+	time = time + 3600*24*7
+	ups.week = os.date('Y%YW%U', time)
+	ups.vers = 0
+	push( ret )
     end
-
-    push(week, vers, ret)
 
     ret = fd.reduce(fd.keys( ret ), fd.map( hd.asJSON ), fd.into, {})
 
