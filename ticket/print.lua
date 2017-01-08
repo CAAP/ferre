@@ -3,6 +3,7 @@
 local aux = require'ferre.aux'
 local lpr = require'ferre.bixolon'
 local tkt = require'ferre.ticket'
+local ex = require'ferre.extras'
 
 local fd = require'carlos.fold'
 local sql = require'carlos.sqlite'
@@ -12,8 +13,8 @@ local function int(d) return math.tointeger(d) or d end
 local function tickets(q)
     local uid = q.uid
     local y,m,d = uid:match'^(%d+)-(%d+)-(%d+)'
-    local week = os.date( 'Y%YW%U', os.time{year=y, month=m, day=d} )
-    local conn = assert(sql.connect(string.format('/db/%s.db', week)), 'Error while connecting to DB ' .. week)
+    local week = ex.asweek(os.time{year=y, month=m, day=d})
+    local conn = assert(ex.dbconn(week), 'Error while connecting to DB ' .. week)
     local QRY = 'SELECT * FROM tickets WHERE uid LIKE %q'
     local PRC = 'SELECT desc, precio%d ||"/"|| IFNULL(u%d,"?") prc FROM precios WHERE clave LIKE %q'
 

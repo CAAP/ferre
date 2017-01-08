@@ -4,17 +4,18 @@ local sql = require'carlos.sqlite'
 local fd = require'carlos.fold'
 
 local aux = require'ferre.aux'
-local mx = require'ferre.timezone'
+--local mx = require'ferre.timezone'
 local hd = require'ferre.header'
+local ex = require'ferre.extras'
 
-local week = os.date('Y%YW%U', mx())
+local week = ex.week() -- os.date('Y%YW%U', mx())
 
 local ups = {store='VERS', week='', vers=0}
 
 local QRY = 'SELECT * FROM updates %s'
 
 local function push(ret)
-    local conn = assert( sql.connect(string.format('/db/%s.db', ups.week)) )
+    local conn = assert( ex.dbconn( ups.week ) ) -- sql.connect(string.format('/db/%s.db', ups.week))
     local clause = string.format('WHERE vers > %d', ups.vers)
 
     local function into(w)
@@ -32,7 +33,7 @@ end
 
 local function records(w)
     local ret = {ups}
-    local time = mx()
+    local time = ex.now() -- mx()
 
     ups.week = w.oweek; ups.vers = w.overs -- Initial values
 
@@ -40,7 +41,7 @@ local function records(w)
 
     while ups.week ~= w.nweek do
 	time = time + 3600*24*7
-	ups.week = os.date('Y%YW%U', time)
+	ups.week = ex.asweek( time ) --os.date('Y%YW%U', time)
 	ups.vers = 0
 	push( ret )
     end
