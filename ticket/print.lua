@@ -8,6 +8,12 @@ local ex = require'ferre.extras'
 local fd = require'carlos.fold'
 local sql = require'carlos.sqlite'
 
+local ventas = {VENTA=true, FACTURA=true, CREDITO=true}
+
+local function ventap(s)
+    return (ventas[s] and 'ventas' or 'tickets')
+end
+
 local function int(d) return math.tointeger(d) or d end
 
 local function tickets(q)
@@ -15,7 +21,7 @@ local function tickets(q)
     local y,m,d = uid:match'^(%d+)-(%d+)-(%d+)'
     local week = ex.asweek(os.time{year=y, month=m, day=d})
     local conn = assert(ex.dbconn(week), 'Error while connecting to DB ' .. week)
-    local QRY = 'SELECT * FROM tickets WHERE uid LIKE %q'
+    local QRY = 'SELECT * FROM %s WHERE uid LIKE %q'
     local PRC = 'SELECT desc, precio%d ||"/"|| IFNULL(u%d,"?") prc FROM precios WHERE clave LIKE %q'
 
     assert(conn.exec'ATTACH DATABASE "/db/ferre.db" AS FR')
@@ -27,9 +33,11 @@ local function tickets(q)
 	w.clave = int(w.clave)
 	w.qty = int(w.qty)
 	w.rea = int(w.rea)
-	local ret = fd.first( conn.query(string.format(PRC, j, j, w.clave)), function(x) return x end )
-	w.desc = ret.desc
-	w.prc = ret.prc
+	if not w.desc then
+	    local ret = fd.first( conn.query(string.format(PRC, j, j, w.clave)), function(x) return x end )
+	    w.desc = ret.desc
+	    w.prc = ret.prc
+	end
 	w.subTotal = string.format('%.2f', w.totalCents/100)
 	return w
     end
@@ -43,7 +51,7 @@ local function tickets(q)
         local total = 0
 	local suma = fd.map(function(w) total = total + w.totalCents; return w end)
 
-	ret.datos = fd.reduce( conn.query(string.format(QRY, uid)), suma, fd.map(precio), fd.into, {} )
+	ret.datos = fd.reduce( conn.query(string.format(QRY, ventap(q.tag), uid)), suma, fd.map(precio), fd.into, {} )
 	ret.total = string.format('%.2f', total/100)
 
 	return ret
