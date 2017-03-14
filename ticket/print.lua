@@ -18,6 +18,7 @@ local function int(d) return math.tointeger(d) or d end
 
 local function tickets(q)
     local uid = q.uid
+    local tag = q.tag or ''
     local y,m,d = uid:match'^(%d+)-(%d+)-(%d+)'
     local week = ex.asweek(os.time{year=y, month=m, day=d})
     local conn = assert(ex.dbconn(week), 'Error while connecting to DB ' .. week)
@@ -46,12 +47,11 @@ local function tickets(q)
 	local fecha = uid:match'([^P]+)P'
 	local p = nombres[int(uid:match'(%d+)$')] or 'NaP'
 
-	local ret = {fecha=fecha, person=p, tag=(q.tag or '')}
-
         local total = 0
 	local suma = fd.map(function(w) total = total + w.totalCents; return w end)
 
-	ret.datos = fd.reduce( conn.query(string.format(QRY, ventap(q.tag), uid)), suma, fd.map(precio), fd.into, {} )
+	local ret = {fecha=fecha, person=p, tag=tag}
+	ret.datos = fd.reduce( conn.query(string.format(QRY, ventap(tag), uid)), suma, fd.map(precio), fd.into, {} )
 	ret.total = string.format('%.2f', total/100)
 
 	return ret

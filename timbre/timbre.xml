@@ -16,18 +16,18 @@
     folio=$FOLIO
     tipoDeComprobante=$TIPO
     version="3.2" >
-    <cfdi:Emisor nombre=$NOMBRE rfc=$RFC>
-	<cfdi:DomicilioFiscal calle="" noExterior="" colonia="" municipio="OCOTLAN DE MORELOS" estado="OAXACA" pais="MEXICO" codigoPostal="71510" />
+    <cfdi:Emisor nombre="ALBERTO OCTAVIO AGUILAR MU~NOZ" rfc="AUMA501114S7A">
+	<cfdi:DomicilioFiscal calle="BENITO JUAREZ" noExterior="1-C" colonia="CENTRO" municipio="OCOTLAN DE MORELOS" estado="OAXACA" pais="MEXICO" codigoPostal="71510" />
 	<cfdi:RegimenFiscal Regimen="ACTIVIDAD EMPRESARIAL Y PROFESIONAL" />
     </cfdi:Emisor>
     <cfdi:Receptor nombre=$NOMBRE rfc=$RFC>
-	<cfdi:Domicilio calle="" noExterior="" colonia="" municipio="" estado="OAXACA" pais="MEXICO" codigoPostal="71510" />
+	<cfdi:Domicilio calle=$CALLE noExterior=$NOE colonia=$COL municipio=$MPIO estado=$EDO pais="MEXICO" codigoPostal=$CP />
     </cfdi:Receptor>
     <cfdi:Conceptos>
     </cfdi:Conceptos>
     <cfdi:Impuestos>
 	<cfdi:Traslados>
-	    <cfdi:Traslado impuesto="IVA" tasa= importe= />
+	    <cfdi:Traslado impuesto="IVA" tasa=$TASA importe=$IVA />
 	</cfdi:Traslados>
     </cfdi:Impuestos>
     <cfdi:Addenda/>
