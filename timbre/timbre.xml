@@ -27,10 +27,8 @@
     </cfdi:Conceptos>
     <cfdi:Impuestos>
 	<cfdi:Traslados>
-	    <cfdi:Traslado impuesto="IVA" tasa=$TASA importe=$IVA />
+	    <cfdi:Traslado impuesto="IVA" tasa=$TASA_IVA importe=$IVA />
 	</cfdi:Traslados>
     </cfdi:Impuestos>
     <cfdi:Addenda/>
 </cfdi:Comprobante>
-
-

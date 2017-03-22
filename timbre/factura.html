@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> FACTURA </title>
+</head>
+<body lang="es-MX">
+    <header>
+	<table>
+	    <tbody>
+		<tr><td><strong>$Emisor.nombre</strong></td></tr>
+		<tr><td><strong>R.F.C. $Emisor.rfc</strong></td></tr>
+		<tr><td>$DomicilioFiscal.calle $DomicilioFiscal.noExterior, $DomicilioFiscal.colonia</td></tr>
+		<tr><td>$DomicilioFiscal.municipio, $DomicilioFiscal.estado</td></tr>
+		<tr><td>$DomicilioFiscal.pais, $DomicilioFiscal.codigoPostal</td></tr>
+		<tr><td>REGIMEN FISCAL: $RegimenFiscal.Regimen</td></tr>
+	    <tbody>
+	    <tfoot>
+		<tr><td>FACTURA $Comprobante.folio</td><td>$Comprobante.LugarExpedicion</td><td>$Comprobante.fecha</td></tr>
+		<tr><td>$Comprobante.formaDePago</td><td>METODO DE PAGO: $Comprobante.metodoDePago</td><td>$Comprobante.cuenta</td></tr>
+	    </tfoot>
+	<table>
+    </header>
+	<table>
+	    <tbody>
+		<tr><td><strong>$Receptor.nombre</strong></td><td>Folio Fiscal: $TimbreFiscalDigital.UUID</td></tr>
+		<tr><td><strong>R.F.C. $Receptor.rfc</strong></td><td>No. Certificado (Emisor): $Comprobante.noCertificado</td></tr>
+		<tr><td>$Domicilio.calle $Domicilio.noExterior $Domicilio.colonia</td><td>No. Certificado (SAT): $TimbreFiscalDigital.noCertificadoSAT</td></tr>
+		<tr><td>$Domicilio.municipio, $Domicilio.estado</td><td>Fecha y Hora: $TimbreFiscalDigital.FechaTimbrado</td></tr>
+		<tr><td>$Domicilio.pais, $Domicilio.codigoPostal</td></tr>
+	    </tbody>
+	</table>
+	<table>
+	    <tbody>
+		<tr><td rowspan="3"><img src="data:image/jpeg;base64, $QRCode" /></td><td>Sello digital CFD: $TimbreFiscalDigital.selloCFD</td></tr>
+		<tr><td>Sello digital SAT: $TimbreFiscalDigital.selloSAT</td></tr>
+		<tr><td>Cadena original: $CadenaOriginal</td></tr>
+	    </tbody>
+	</table>
+    <footer>  </footer>
+</body>
+</html>
