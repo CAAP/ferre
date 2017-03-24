@@ -133,7 +133,13 @@ local function traslados(w)
     w.Traslados = string.format('<tr><td colspan="5" class="derecha">%s(%s%%)</td><td class="derecha">%s</td></tr>', w['Traslado.impuesto'], w['Traslado.tasa'], w['Traslado.importe'])
     return w
 end
-
+--[[
+local function trailing(w)
+    local keys = {'TimbreFiscalDigital.selloCFD', 'TimbreFiscalDigital.selloSAT', 'CadenaOriginal'}
+    for _,k in ipairs(keys) do w[k] = w[k]:gsub('%%0A', '') end
+    return w
+end
+--]]
 local function addlogo(w) w.LOGO = logo; return w end
 
 local ret = fd.comp{addlogo, conceptos, traslados, tim.obtener'53C1BA08-298D-4323-992C-017716926180'}
