@@ -35,7 +35,7 @@ local function tickets(q)
 	local suma = fd.map(function(w) total = total + w.totalCents; return w end)
 	-- uid REQUIRED to get DATE & TIME
 	local ret = {uid=uid, person=p, tag=tag}
-	ret.datos = fd.reduce( conn.query(string.format(QRY, 'tickets', uid)), suma, fd.map(precio(conn)), fd.into, {} ) -- ventap(tag) : DBase to connect
+	ret.datos = fd.reduce( conn.query(string.format(QRY, 'tickets', uid)), fd.map(precio(conn)), suma, fd.into, {} ) -- ventap(tag) : DBase to connect
 	ret.total = string.format('%.2f', total/100)
 
 	return ret
