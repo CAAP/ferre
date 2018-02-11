@@ -5,6 +5,7 @@ local fd = require'carlos.fold'
 
 local conn = sql.connect'/db/ferre.db'
 
+-- MODIFY using fold instead; uidSAT field will be added
 local datos = conn.header'datos'
 assert(datos, 'Table "datos" not found in "/db/ferre.sql"')
 datos[#datos] = nil -- remove rebaja
