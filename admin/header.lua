@@ -5,12 +5,10 @@ local fd = require'carlos.fold'
 
 local conn = sql.connect'/db/ferre.db'
 
--- MODIFY using fold instead; uidSAT field will be added
+local del = {rebaja=true, costol=true, fecha=true}
 local datos = conn.header'datos'
 assert(datos, 'Table "datos" not found in "/db/ferre.sql"')
-datos[#datos] = nil -- remove rebaja
-datos[#datos] = nil -- remove costol
-datos[#datos] = nil -- remove fecha
+datos = fd.reduce(datos, fd.filter(function(x) return not(del[x]) end), fd.into, {})
 table.insert(datos, 6,'rebaja')
 
 local function quot(x) return string.format('%q', x) end
