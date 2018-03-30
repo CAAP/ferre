@@ -8,6 +8,8 @@ local precio = require'ferre.precio'
 
 local fd = require'carlos.fold'
 
+local fs = require'carlos.files'
+
 --[[ NEED TO BE REWRITTEN XXX
 local ventas = {VENTA=true, FACTURA=true, CREDITO=true}
 
@@ -35,20 +37,27 @@ local function tickets(q)
 	    return w
 	end
 	local function bruto(w)
-	    w.prc = w.prc / 1.16
+	    w.prc = (tonumber(w.prc) or 0) / 1.16
 	    w.subTotal = string.format('%.2f', w.totalCents/116)
+	    return w
+	end
+	local function sat(w)
+	    local ret = fd.first(conn.query(string.format('SELECT uidSAT FROM datos WHERE clave LIKE %q', w.clave)), function(x) return x end)
+	    w.uidSAT = ret.uidSAT == 0 and 'XXXXXX' or ret.uidSAT
 	    return w
 	end
 
 	-- uid REQUIRED to get DATE & TIME
 	local ret = {uid=uid, person=p, tag=tag}
-	ret.datos = fd.reduce( conn.query(string.format(QRY, 'tickets', uid)), fd.map(precio(conn)), fd.map(suma), fd.map(bruto), fd.into, {} ) -- ventap(tag) : DBase to connect
+	ret.datos = fd.reduce( conn.query(string.format(QRY, 'tickets', uid)), fd.map(precio(conn)), fd.map(suma), fd.map(bruto), fd.map(sat), fd.into, {} ) -- ventap(tag) : DBase to connect
 	ret.total = string.format('%.2f', total/116) -- BRUTO
+	ret.iva = string.format("%.2f", total/725)
 
 	return ret
     end
 
-    lpr( tkt( fetch() ) )
+--    lpr( tkt( fetch() ) )
+    fs.dump('ticket.txt', tkt( fetch() ) )
 --]]
 
     return 'OK'
