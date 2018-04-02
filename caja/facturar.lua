@@ -10,14 +10,6 @@ local fd = require'carlos.fold'
 
 local fs = require'carlos.files'
 
---[[ NEED TO BE REWRITTEN XXX
-local ventas = {VENTA=true, FACTURA=true, CREDITO=true}
-
-local function ventap(s)
-    return (ventas[s] and 'ventas' or 'tickets')
-end
---]]
-
 local function tickets(q)
     local uid = q.uid
     local tag = q.tag or ''
@@ -37,7 +29,7 @@ local function tickets(q)
 	    return w
 	end
 	local function bruto(w)
-	    w.prc = (tonumber(w.prc) or 0) / 1.16
+	    w.prc = string.format('%.2f/%s', tonumber(w.bruto) or 0, w.unit) 
 	    w.subTotal = string.format('%.2f', w.totalCents/116)
 	    return w
 	end
