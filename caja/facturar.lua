@@ -35,7 +35,7 @@ local function tickets(q)
 	end
 	local function sat(w)
 	    local ret = fd.first(conn.query(string.format('SELECT uidSAT FROM datos WHERE clave LIKE %q', w.clave)), function(x) return x end)
-	    w.uidSAT = ret.uidSAT == 0 and 'XXXXXX' or ret.uidSAT
+	    w.uidSAT = ret.uidSAT -- == 0 and 'XXXXXX' or ret.uidSAT
 	    return w
 	end
 
