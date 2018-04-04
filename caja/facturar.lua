@@ -42,8 +42,9 @@ local function tickets(q)
 	-- uid REQUIRED to get DATE & TIME
 	local ret = {uid=uid, person=p, tag=tag}
 	ret.datos = fd.reduce( conn.query(string.format(QRY, 'tickets', uid)), fd.map(precio(conn)), fd.map(suma), fd.map(bruto), fd.map(sat), fd.into, {} ) -- ventap(tag) : DBase to connect
+	ret.ttotal = string.format('%.2f', total/100)    -- TOTAL
 	ret.total = string.format('%.2f', total/116) -- BRUTO
-	ret.iva = string.format("%.2f", total/725)
+	ret.iva = string.format("%.2f", total/725)   -- IVA
 
 	return ret
     end
